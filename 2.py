@@ -2,7 +2,7 @@ import re
 
 # Part 1
 sol = 0
-for line in open('input'):
+for line in open('2.input'):
     m = re.match('(\d+)-(\d+) (\w{1}): (\w+)', line.strip())
     a = int(m.group(1))
     b = int(m.group(2))
@@ -15,7 +15,7 @@ print(sol)
 
 # Part 2
 sol = 0
-for line in open('input'):
+for line in open('2.input'):
     m = re.match('(\d+)-(\d+) (\w{1}): (\w+)', line.strip())
     a = int(m.group(1))
     b = int(m.group(2))

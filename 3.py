@@ -1,5 +1,5 @@
 # Part 1
-lines = [l.strip() for l in open('input')]
+lines = open('3.input').read().splitlines()
 
 sol = 0
 for i, line in enumerate(lines):
