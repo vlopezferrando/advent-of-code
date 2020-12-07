@@ -1,7 +1,6 @@
 import re
 
-# Part 1
-sol = 0
+sol1 = sol2 = 0
 for line in open('2.input'):
     m = re.match('(\d+)-(\d+) (\w{1}): (\w+)', line.strip())
     a = int(m.group(1))
@@ -9,20 +8,11 @@ for line in open('2.input'):
     char = m.group(3)
     s = m.group(4)
     cops = s.count(char)
+    # Part 1
     if a <= cops and cops <= b:
-        sol += 1
-print(sol)
-
-# Part 2
-sol = 0
-for line in open('2.input'):
-    m = re.match('(\d+)-(\d+) (\w{1}): (\w+)', line.strip())
-    a = int(m.group(1))
-    b = int(m.group(2))
-    char = m.group(3)
-    s = m.group(4)
-    cops = s.count(char)
+        sol1 += 1
+    # Part 2
     if bool(s[a-1] == char) != bool(s[b-1] == char):
-        sol += 1
-print(sol)
-
+        sol2 += 1
+print(sol1)
+print(sol2)
