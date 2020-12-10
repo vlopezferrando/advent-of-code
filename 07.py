@@ -4,7 +4,7 @@ from itertools import chain
 # Read input
 G = defaultdict(list)
 R = defaultdict(dict)
-for row in [line.strip().split() for line in open('7.input')]:
+for row in [line.strip().split() for line in open('07.in')]:
     a = row[0] + ' ' + row[1]
     for i in range(4, len(row), 4):
         if row[i] != 'no':

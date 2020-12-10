@@ -1,5 +1,5 @@
 # Read input
-rows = [[l.split()[0], int(l.split()[1])] for l in open('8.input')]
+rows = [[l.split()[0], int(l.split()[1])] for l in open('08.in')]
 
 # Part 1
 def run():

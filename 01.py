@@ -1,4 +1,4 @@
-l = [int(x.strip()) for x in open('1.input')]
+l = [int(x.strip()) for x in open('01.in')]
 
 # Part 1
 for i in range(len(l)):

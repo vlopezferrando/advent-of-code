@@ -2,7 +2,7 @@ import re
 
 # Read rows
 rows = ['']
-for line in open('4.input').read().splitlines():
+for line in open('04.in').read().splitlines():
     if line == '':
         rows.append('')
     else:

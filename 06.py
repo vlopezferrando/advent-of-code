@@ -1,6 +1,6 @@
 # Read input
 groups = [[]]
-for line in open('6.input').read().splitlines():
+for line in open('06.in').read().splitlines():
     if line == '':
         groups.append([])
     else:

@@ -1,7 +1,7 @@
 from itertools import combinations
 
 # Read input
-v = [int(l) for l in open('9.in')]
+v = [int(l) for l in open('09.in')]
 
 # Part 1
 for i, x in enumerate(v[25:]):

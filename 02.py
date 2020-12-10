@@ -1,7 +1,7 @@
 import re
 
 sol1 = sol2 = 0
-for line in open('2.input'):
+for line in open('02.in'):
     m = re.match('(\d+)-(\d+) (\w{1}): (\w+)', line.strip())
     a = int(m.group(1))
     b = int(m.group(2))
