@@ -3,25 +3,25 @@ from collections import defaultdict
 
 def rotate(r):
     """Rotate a square 90 degrees"""
-    nr = [[''] * len(r) for _ in r]
+    nr = [[""] * len(r) for _ in r]
     for i, row in enumerate(r):
         for j, c in enumerate(row):
             nr[j][len(r) - 1 - i] = c
-    return [''.join(row) for row in nr]
+    return ["".join(row) for row in nr]
 
 
 def flip(r):
     """Horizontally flip square"""
-    return [''.join(reversed(row)) for row in r]
+    return ["".join(reversed(row)) for row in r]
 
 
 def col(r, i):
     """Get ith column of square as a string"""
-    return ''.join(row[i] for row in r)
+    return "".join(row[i] for row in r)
 
 
 # Read input
-lines = open('20.in').read().splitlines()
+lines = open("20.in").read().splitlines()
 
 # Read squares and save as list of all possible rotations
 rects = defaultdict(list)
@@ -82,7 +82,7 @@ for i in range(1, 12):
 # Create final board
 v = []
 for row in board:
-    nrows = [''] * 8
+    nrows = [""] * 8
     for n, o in row:
         for i, rrow in enumerate(rects[n][o][1:-1]):
             nrows[i] += rrow[1:-1]
@@ -90,21 +90,21 @@ for row in board:
 
 # Count appearances of the monster
 def fill_monster(r):
-    monster = ['                  # ', '#    ##    ##    ###', ' #  #  #  #  #  #   ']
+    monster = ["                  # ", "#    ##    ##    ###", " #  #  #  #  #  #   "]
     for i in range(len(r) - len(monster)):
         for j in range(len(r[0]) - len(monster[0])):
             valid = True
             for mi, mrow in enumerate(monster):
                 for mj, mc in enumerate(mrow):
-                    if mc == '#' and r[i + mi][j + mj] == '.':
+                    if mc == "#" and r[i + mi][j + mj] == ".":
                         valid = False
             if valid:
                 for mi, mrow in enumerate(monster):
                     for mj, mc in enumerate(mrow):
-                        if mc == '#':
+                        if mc == "#":
                             l = list(r[i + mi])
-                            l[j + mj] = 'O'
-                            r[i + mi] = ''.join(l)
+                            l[j + mj] = "O"
+                            r[i + mi] = "".join(l)
     return r
 
 
@@ -119,4 +119,4 @@ v = fill_monster(rotate(rotate(flip(v))))
 v = fill_monster(rotate(rotate(rotate(flip(v)))))
 
 # Part 2
-print(sum(l.count('#') for l in v))
+print(sum(l.count("#") for l in v))

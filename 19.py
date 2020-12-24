@@ -1,21 +1,21 @@
 # Read input
-lines = open('19.in').read().splitlines()
+lines = open("19.in").read().splitlines()
 rules = [[] for _ in range(200)]
 ss = []
 for i, l in enumerate(lines):
-    if l == '':
+    if l == "":
         pass
-    elif l[0] in 'ab':
+    elif l[0] in "ab":
         ss.append(l)
     else:
-        n, rule = int(l.split(':')[0]), l.split(':')[1].split()
+        n, rule = int(l.split(":")[0]), l.split(":")[1].split()
         rules[n].append([])
         for c in rule:
             if c == '"a"':
                 ruleA = n
             elif c == '"b"':
                 ruleB = n
-            elif c == '|':
+            elif c == "|":
                 rules[n].append([])
             else:
                 rules[n][-1].append(int(c))
@@ -27,9 +27,9 @@ def valid(a, b, r):
     if (a, b, r) in mem:
         return mem[(a, b, r)]
     if r == ruleA:
-        return b == a + 1 and s[a] == 'a'
+        return b == a + 1 and s[a] == "a"
     if r == ruleB:
-        return b == a + 1 and s[a] == 'b'
+        return b == a + 1 and s[a] == "b"
     ret = False
     for rule in rules[r]:
         if len(rule) == 1:

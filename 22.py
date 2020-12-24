@@ -1,4 +1,4 @@
-p1, p2 = open('22.in').read().split('\n\n')
+p1, p2 = open("22.in").read().split("\n\n")
 p1 = [int(x) for x in p1.splitlines()[1:]]
 p2 = [int(x) for x in p2.splitlines()[1:]]
 

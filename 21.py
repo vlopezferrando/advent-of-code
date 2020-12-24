@@ -1,10 +1,10 @@
 words = []
 candidates = {}
-for line in open('21.in'):
-    row, b = line.replace('(', '').replace(')', '').strip().split(' contains ')
+for line in open("21.in"):
+    row, b = line.replace("(", "").replace(")", "").strip().split(" contains ")
     row = row.split()
     words += row
-    for a in b.split(', '):
+    for a in b.split(", "):
         candidates[a] = candidates[a] & set(row) if a in candidates else set(row)
 
 for _ in range(200):
@@ -20,4 +20,4 @@ bad = [candidates[k].pop() for k in sorted(candidates.keys())]
 print(sum(w not in bad for w in words))
 
 # Part 2
-print(','.join(bad))
+print(",".join(bad))

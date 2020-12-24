@@ -14,7 +14,7 @@ def play(next, i, n):
 
 
 # Read input
-l = [int(n) - 1 for n in '198753462']
+l = [int(n) - 1 for n in "198753462"]
 
 # Part 1
 next = [-1] * len(l)
@@ -25,7 +25,7 @@ play(next, l[0], 100)
 
 n = next[0]
 while n:
-    print(n + 1, end='')
+    print(n + 1, end="")
     n = next[n]
 print()
 

@@ -2,23 +2,23 @@ from collections import defaultdict
 
 
 def coord(x, y, s):
-    if s == 'e':
+    if s == "e":
         return x + 1, y
-    if s == 'w':
+    if s == "w":
         return x - 1, y
-    if s == 'ne':
+    if s == "ne":
         return x + y % 2, y + 1
-    if s == 'se':
+    if s == "se":
         return x + y % 2, y - 1
-    if s == 'nw':
+    if s == "nw":
         return x - (y + 1) % 2, y + 1
-    if s == 'sw':
+    if s == "sw":
         return x - (y + 1) % 2, y - 1
 
 
 def coords(x, y, s):
     while s:
-        if s[0] in 'ew':
+        if s[0] in "ew":
             x, y = coord(x, y, s[0])
             s = s[1:]
         else:
@@ -28,7 +28,7 @@ def coords(x, y, s):
 
 
 def neigh(x, y):
-    for d in ['e', 'se', 'sw', 'w', 'nw', 'ne']:
+    for d in ["e", "se", "sw", "w", "nw", "ne"]:
         yield coord(x, y, d)
 
 
@@ -42,7 +42,7 @@ def next(b):
 
 # Part 1
 d = defaultdict(bool)
-for line in open('24.in'):
+for line in open("24.in"):
     c = coords(0, 0, line.strip())
     d[c] = not d[c]
 print(sum(d.values()))
