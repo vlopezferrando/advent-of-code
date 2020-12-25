@@ -12,7 +12,7 @@ for line in open("04.in").read().splitlines():
 required_fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
 with_required_fields = []
 for row in rows:
-    fields = {field.split(":")[0]: field.split(":")[1] for field in row.split(" ")[1:]}
+    fields = dict(field.split(":") for field in row.split(" ")[1:])
     if all(f in fields for f in required_fields):
         with_required_fields.append(fields)
 print(len(with_required_fields))
