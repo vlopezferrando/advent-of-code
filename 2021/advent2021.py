@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections import Counter, defaultdict, namedtuple, deque
 from itertools import permutations, combinations, product, chain
-from functools import lru_cache
+from functools import lru_cache, reduce
 from typing import Dict, Tuple, Set, List, Iterator, Optional, Union
 
 import operator
@@ -17,9 +17,9 @@ import sys
 import re
 
 
-def data(day: int, parser=str, sep='\n') -> list:
+def data(day: int, parser=str, sep="\n") -> list:
     "Split the day's input file into sections separated by `sep`, and apply `parser` to each."
-    sections = open(f'input/{day}.txt').read().rstrip().split(sep)
+    sections = open(f"input/{day}.txt").read().rstrip().split(sep)
     return [parser(section) for section in sections]
 
 
@@ -28,13 +28,13 @@ def do(day, *answers) -> Dict[int, int]:
     g = globals()
     got = []
     for part in (1, 2):
-        fname = f'day{day}_{part}'
+        fname = f"day{day}_{part}"
         if fname in g:
-            got.append(g[fname](g[f'in{day}']))
+            got.append(g[fname](g[f"in{day}"]))
             if len(answers) >= part:
                 assert (
                     got[-1] == answers[part - 1]
-                ), f'{fname}(in{day}) got {got[-1]}; expected {answers[part - 1]}'
+                ), f"{fname}(in{day}) got {got[-1]}; expected {answers[part - 1]}"
     return got
 
 
@@ -62,13 +62,13 @@ def multimap(items: Iterable[Tuple]) -> dict:
 
 def ints(text: str) -> Tuple[int]:
     "Return a tuple of all the integers in text."
-    return tuple(map(int, re.findall('-?[0-9]+', text)))
+    return tuple(map(int, re.findall("-?[0-9]+", text)))
 
 
-def atoms(text: str, ignore=r'', sep=None) -> Tuple[Union[int, str]]:
+def atoms(text: str, ignore=r"", sep=None) -> Tuple[Union[int, str]]:
     "Parse text into atoms (numbers or strs), possibly ignoring a regex."
     if ignore:
-        text = re.sub(ignore, '', text)
+        text = re.sub(ignore, "", text)
     return tuple(map(atom, text.split(sep)))
 
 
@@ -90,7 +90,7 @@ def mapt(fn, *args):
     return tuple(map(fn, *args))
 
 
-cat = ''.join
+cat = "".join
 flatten = chain.from_iterable
 Char = str  # Type used to indicate a single character
 
@@ -119,19 +119,26 @@ def day1_2(nums):
 # Day 2
 #
 
-in2: List[int] = data(2, int)
+
+in2: List[Tuple(str, int)] = data(2, atoms)
 
 
-def day2_1(nums):
-    return 0
+def day2_1(commands):
+    inc = {"down": 1j, "up": -1j, "forward": 1}
+    p = sum(n * inc[c] for c, n in commands)
+    return int(p.real * p.imag)
 
 
-def day2_2(nums):
-    return 0
+def day2_2(commands):
+    p = aim = 0
+    for c, n in commands:
+        if c == 'down':    aim += n
+        if c == 'up':      aim -= n
+        if c == 'forward': p += n * (1 + aim * 1j)
+    return int(p.real * p.imag)
 
 
-# print(do(2))
-
+do(2, 1524750, 1592426537)
 
 #
 # Day 3
