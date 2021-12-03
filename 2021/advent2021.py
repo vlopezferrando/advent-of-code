@@ -144,18 +144,24 @@ do(2, 1524750, 1592426537)
 # Day 3
 #
 
-in3: List[int] = data(3, int)
+in3: Tuple[str] = tuple(data(3))
 
+@lru_cache
+def most_least_common(rows):
+    return [''.join(c.most_common()[i%len(c)][0] if c['0'] != c['1'] else str((i+1)%2)
+                    for c in map(Counter, zip(*rows))) for i in [0,1]]
 
-def day3_1(nums):
-    return 0
+def select_rating(rows, n):
+    def filtr(l, i): return tuple(r for r in l if r[i] == most_least_common(l)[n][i])
+    return int(reduce(filtr, range(len(rows[0])), rows)[0], 2)
 
+def day3_1(rows):
+    return math.prod(int(n, 2) for n in most_least_common(rows))
 
-def day3_2(nums):
-    return 0
+def day3_2(rows):
+    return select_rating(rows, 0) * select_rating(rows, 1)
 
-
-# print(do(3))
+print(do(3, 2261546, 6775520))
 
 
 #
