@@ -170,71 +170,96 @@ print(do(3, 2261546, 6775520))
 
 in4: List[int] = data(4, int)
 
+def parse_segment(row):
+    return list(map(ints, row.split('->')))
 
 def day4_1(nums):
     return 0
 
+in5: List[List[int]] = data(5, parse_segment)
 
 def day4_2(nums):
     return 0
 
+def points(a, b, neq):
+    l = []
+    if a[0] == b[0]:
+        l += [a[0] + i * 1j for i in range(min(a[1], b[1]), max(a[1], b[1]) + 1)]
+    elif a[1] == b[1]:
+        l += [i + a[1] * 1j for i in range(min(a[0], b[0]), max(a[0], b[0]) + 1)]
+    elif neq:
+        incx = 1 if a[0] < b[0] else -1
+        incy = 1 if a[1] < b[1] else -1
+        l += [
+            x + y * 1j
+            for x, y in zip(
+                range(a[0], b[0] + incx, incx), range(a[1], b[1] + incy, incy)
+            )
+        ]
+    return l
 
 # print(do(4))
 
-
-#
-# Day 5
-#
-
-in5: List[int] = data(5, int)
-
-
-def day5_1(nums):
-    return 0
+def count(segments, neq):
+    return sum(
+        n > 1
+        for n in Counter(flatten([points(a, b, neq) for a, b in segments])).values()
+    )
 
 
-def day5_2(nums):
-    return 0
+def day5_1(segments):
+    return count(segments, False)
 
 
-# print(do(5))
+def day5_2(segments):
+    return count(segments, True)
+
+
+do(5, 5169, 22083)
 
 
 #
 # Day 6
 #
 
-in6: List[int] = data(6, int)
+in6: List[int] = data(6, int, sep=',')
 
+
+@lru_cache(1000)
+def f(n, s):
+    if s == 0: return 1
+    if n == 0: return f(6, s-1) + f(8, s-1)
+    return f(n-1, s-1)
 
 def day6_1(nums):
-    return 0
+    return sum(f(n, 80) for n in nums)
 
 
 def day6_2(nums):
-    return 0
+    return sum(f(n, 256) for n in nums)
 
 
-# print(do(6))
+do(6, 349549, 1589590444365)
 
 
 #
 # Day 7
 #
 
-in7: List[int] = data(7, int)
+in7: List[int] = data(7, int, sep=',')
 
 
 def day7_1(nums):
-    return 0
+    return min(sum(abs(n - i) for n in nums) for i in range(max(nums)))
 
 
 def day7_2(nums):
-    return 0
+    return min(
+        sum(abs(n - i) * (abs(n - i) + 1) // 2 for n in nums) for i in range(max(nums))
+    )
 
 
-# print(do(7))
-
+do(7, 342534, 94004208)
 
 #
 # Day 8
