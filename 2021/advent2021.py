@@ -265,18 +265,19 @@ do(7, 342534, 94004208)
 # Day 8
 #
 
+digits = lambda t: "abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg".translate(str.maketrans(dict(zip("abcdefg", t)))).split()
+
 fsfs = lambda x: frozenset(map(frozenset, x))
-DIGITS = "abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg"
-digits = lambda t: DIGITS.translate(str.maketrans(dict(zip("abcdefg", t)))).split()
-D = {fsfs(digits(p)): mapt(set, digits(p)) for p in permutations("abcdefg")}
+PERMS = {fsfs(digits(p)): mapt(set, digits(p)) for p in permutations("abcdefg")}
+nums = lambda ds, qs: [PERMS[fsfs(ds)].index(set(q)) for q in qs]
 
 in8: List[int] = data(8, atoms)
 
 def day8_1(rows):
-    return sum(D[fsfs(row[:10])].index(set(q)) in [1, 4, 7, 8] for row in rows for q in row[11:])
+    return sum(n in [1, 4, 7, 8] for row in rows for n in nums(row[:10], row[11:]))
 
 def day8_2(rows):
-    return sum(10**(3-i) * D[fsfs(row[:10])].index(set(q)) for row in rows for i, q in enumerate(row[11:]))
+    return sum(n * 10**(3-i) for row in rows for i, n in enumerate(nums(row[:10], row[11:])))
 
 
 do(8, 288, 940724)
