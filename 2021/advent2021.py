@@ -161,14 +161,14 @@ def day3_1(rows):
 def day3_2(rows):
     return select_rating(rows, 0) * select_rating(rows, 1)
 
-print(do(3, 2261546, 6775520))
+do(3, 2261546, 6775520)
 
 
 #
 # Day 4
 #
 
-in4: List[int] = data(4, int)
+in4: List[int] = data(4, str)
 
 def parse_segment(row):
     return list(map(ints, row.split('->')))
@@ -180,6 +180,9 @@ in5: List[List[int]] = data(5, parse_segment)
 
 def day4_2(nums):
     return 0
+
+
+# print(do(4))
 
 def points(a, b, neq):
     l = []
@@ -198,7 +201,6 @@ def points(a, b, neq):
         ]
     return l
 
-# print(do(4))
 
 def count(segments, neq):
     return sum(
@@ -287,18 +289,25 @@ do(8, 288, 940724)
 # Day 9
 #
 
-in9: List[int] = data(9, int)
+in9: List[int] = data(9, lambda l: mapt(int, l))
 
+def neighs(i, j, rows):
+    return [(i+di, j+dj) for di, dj in ((0,-1), (0,1), (1,0), (-1,0))
+            if i+di >= 0 and j+dj >= 0 and i+di < len(rows) and j+dj < len(rows[0])]
 
-def day9_1(nums):
-    return 0
+def day9_1(rows):
+    return sum(1 + x for i, r in enumerate(rows) for j, x in enumerate(r)
+               if all(rows[ni][nj] > x for ni, nj in neighs(i, j, rows)))
 
+def day9_2(rows):
+    seen = [[False]*len(r) for r in rows]
+    def dfs(i, j):
+        seen[i][j] = True
+        return 0 if rows[i][j] == 9 else 1 + sum(dfs(*n) for n in neighs(i, j, rows) if not seen[n[0]][n[1]])
 
-def day9_2(nums):
-    return 0
+    return math.prod(sorted([dfs(i, j) for i, r in enumerate(rows) for j, _ in enumerate(r)])[-3:])
 
-
-# print(do(9))
+print(do(9, 448, 1417248))
 
 
 #
