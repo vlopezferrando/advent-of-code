@@ -293,7 +293,7 @@ in9: List[int] = data(9, lambda l: mapt(int, l))
 
 def neighs(i, j, rows):
     return [(i+di, j+dj) for di, dj in ((0,-1), (0,1), (1,0), (-1,0))
-            if i+di >= 0 and j+dj >= 0 and i+di < len(rows) and j+dj < len(rows[0])]
+            if 0 <= i+di < len(rows) and 0 <= j+dj < len(rows[0])]
 
 def day9_1(rows):
     return sum(1 + x for i, r in enumerate(rows) for j, x in enumerate(r)
