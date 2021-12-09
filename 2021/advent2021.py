@@ -289,23 +289,23 @@ do(8, 288, 940724)
 # Day 9
 #
 
-in9: List[int] = data(9, lambda l: mapt(int, l))
+in9: List[int] = data(9, lambda l: list(map(int, l)))
 
-def neighs(i, j, rows):
-    return [(i+di, j+dj) for di, dj in ((0,-1), (0,1), (1,0), (-1,0))
-            if 0 <= i+di < len(rows) and 0 <= j+dj < len(rows[0])]
+N, M, DELTA = len(in9), len(in9[0]), [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+def neighs(i, j):
+    return [(i+di, j+dj) for di, dj in DELTA if 0 <= i+di < N and 0 <= j+dj < M]
 
 def day9_1(rows):
     return sum(1 + x for i, r in enumerate(rows) for j, x in enumerate(r)
-               if all(rows[ni][nj] > x for ni, nj in neighs(i, j, rows)))
+               if all(rows[ni][nj] > x for ni, nj in neighs(i, j)))
 
 def day9_2(rows):
-    seen = [[False]*len(r) for r in rows]
     def dfs(i, j):
-        seen[i][j] = True
-        return 0 if rows[i][j] == 9 else 1 + sum(dfs(*n) for n in neighs(i, j, rows) if not seen[n[0]][n[1]])
+        rows[i][j] = 9
+        return 1 + sum(dfs(ni, nj) for ni, nj in neighs(i, j) if rows[ni][nj] != 9)
 
-    return math.prod(sorted([dfs(i, j) for i, r in enumerate(rows) for j, _ in enumerate(r)])[-3:])
+    return math.prod(sorted([dfs(i, j) for i, j in product(range(N), range(M)) if rows[i][j] != 9])[-3:])
 
 do(9, 448, 1417248)
 
