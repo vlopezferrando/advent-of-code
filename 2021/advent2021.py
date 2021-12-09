@@ -148,7 +148,7 @@ in3: Tuple[str] = tuple(data(3))
 
 @lru_cache
 def most_least_common(rows):
-    return [''.join(c.most_common()[i%len(c)][0] if c['0'] != c['1'] else str((i+1)%2)
+    return [''.join(c.most_common()[i%len(c)][0] if c['0'] != c['1'] else str(i^1)
                     for c in map(Counter, zip(*rows))) for i in [0,1]]
 
 def select_rating(rows, n):
@@ -307,7 +307,7 @@ def day9_2(rows):
 
     return math.prod(sorted([dfs(i, j) for i, r in enumerate(rows) for j, _ in enumerate(r)])[-3:])
 
-print(do(9, 448, 1417248))
+do(9, 448, 1417248)
 
 
 #
