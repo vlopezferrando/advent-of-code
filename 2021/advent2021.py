@@ -289,7 +289,7 @@ do(8, 288, 940724)
 # Day 9
 #
 
-in9: List[int] = data(9, lambda l: list(map(int, l)))
+in9: List[List[int]] = data(9, lambda l: list(map(int, l)))
 
 N, M, DELTA = len(in9), len(in9[0]), [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
@@ -314,18 +314,24 @@ do(9, 448, 1417248)
 # Day 10
 #
 
-in10: List[int] = data(10, int)
+in10: List[int] = data(10)
 
+FLIP = defaultdict(str, zip("([{<", ")]}>"))
+POINTS = {")": 3, "]": 57, "}": 1197, ">": 25137}
+middle = lambda v: v[len(v)//2]
 
-def day10_1(nums):
-    return 0
+def solve(s):
+    s = reduce(lambda s, c: s[:-1] if len(s) and c == FLIP[s[-1]] else s + c, s, "")
+    m = re.search(r"[\)\]\}\>]", s)
+    return -POINTS[m.group()] if m else int(s[::-1].translate(str.maketrans("([{<", "1234")), 5)
 
+def day10_1(rows):
+    return -sum(solve(r) for r in rows if solve(r) < 0)
 
-def day10_2(nums):
-    return 0
+def day10_2(rows):
+    return middle(sorted(solve(r) for r in rows if solve(r) > 0))
 
-
-# print(do(10))
+do(10, 290691, 2768166558)
 
 
 #
