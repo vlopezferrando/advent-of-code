@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 from collections import Counter, defaultdict, namedtuple, deque
-from itertools import permutations, combinations, product, chain
+from itertools import permutations, combinations, product, chain, islice, accumulate, count
 from functools import lru_cache, reduce
 from typing import Dict, Tuple, Set, List, Iterator, Optional, Union
 
@@ -202,7 +202,7 @@ def points(a, b, neq):
     return l
 
 
-def count(segments, neq):
+def count2(segments, neq):
     return sum(
         n > 1
         for n in Counter(flatten([points(a, b, neq) for a, b in segments])).values()
@@ -210,11 +210,11 @@ def count(segments, neq):
 
 
 def day5_1(segments):
-    return count(segments, False)
+    return count2(segments, False)
 
 
 def day5_2(segments):
-    return count(segments, True)
+    return count2(segments, True)
 
 
 do(5, 5169, 22083)
@@ -341,59 +341,25 @@ do(10, 290691, 2768166558)
 in11: List[int] = data(11, lambda l: list(map(int, l)))
 
 N, M, DELTA = len(in11), len(in11[0]), list(zip((1, 1, 1, 0, 0, -1, -1, -1), (-1, 0, 1, -1, 1, -1, 0, 1)))
+neighs = lambda i, j: [(i+di, j+dj) for di, dj in DELTA if 0 <= i+di < N and 0 <= j+dj < M]
 
-def neighs(i, j):
-    return [(i+di, j+dj) for di, dj in DELTA if 0 <= i+di < N and 0 <= j+dj < M]
+def explode(b, nflashes=0):
+    for i, j in product(range(N), range(M)):
+        if b[i][j] > 9:
+            b[i][j] = 0
+            for ni, nj in neighs(i, j):
+                b[ni][nj] += b[ni][nj] != 0
+            nflashes += 1
+    return b, nflashes
 
-nflashes = 0
-nsteps = 0
-
-def explode(b):
-    for i, row in enumerate(b):
-        for j, n in enumerate(row):
-            if n > 9:
-                for ni, nj in neighs(i, j):
-                    if b[ni][nj] != 0:
-                        b[ni][nj] += 1
-                b[i][j] = 0
-                global nflashes
-                nflashes += 1
-    return b
-
-def step(b):
-    global nsteps
-    global nflashes
-    nsteps += 1
-    current = nflashes
-    for i, row in enumerate(b):
-        for j, _ in enumerate(row):
-            b[i][j] += 1
-    for i in range(30):
-        b = explode(b)
-    end = nflashes
-    if end - current == N*M:
-        print("steeeeeeeeps", nsteps)
-    return b
-
-def pprint(b):
-    for row in b:
-        for n in row:
-            print(n, end='')
-        print()
-    print()
+step = lambda b: reduce(lambda p, _: explode(*p), range(N*M), ([[n+1 for n in r] for r in b], 0))
+steps = lambda b: accumulate(count(), lambda p, _: step(p[0]), initial=(b, 0))
 
 def day11_1(b):
-    pprint(b)
-    for _ in range(100):
-        b = step(b)
-    pprint(b)
-    global nflashes
-    return nflashes
+    return sum(n for _, n in islice(steps(b), 101))
 
-
-def day11_2(nums):
-    return 324
-
+def day11_2(b):
+    return next(i for i, (_, n) in enumerate(steps(b)) if n == N*M)
 
 print(do(11, 1739, 324))
 
