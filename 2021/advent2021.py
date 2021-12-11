@@ -338,18 +338,64 @@ do(10, 290691, 2768166558)
 # Day 11
 #
 
-in11: List[int] = data(11, int)
+in11: List[int] = data(11, lambda l: list(map(int, l)))
 
+N, M, DELTA = len(in11), len(in11[0]), list(zip((1, 1, 1, 0, 0, -1, -1, -1), (-1, 0, 1, -1, 1, -1, 0, 1)))
 
-def day11_1(nums):
-    return 0
+def neighs(i, j):
+    return [(i+di, j+dj) for di, dj in DELTA if 0 <= i+di < N and 0 <= j+dj < M]
+
+nflashes = 0
+nsteps = 0
+
+def explode(b):
+    for i, row in enumerate(b):
+        for j, n in enumerate(row):
+            if n > 9:
+                for ni, nj in neighs(i, j):
+                    if b[ni][nj] != 0:
+                        b[ni][nj] += 1
+                b[i][j] = 0
+                global nflashes
+                nflashes += 1
+    return b
+
+def step(b):
+    global nsteps
+    global nflashes
+    nsteps += 1
+    current = nflashes
+    for i, row in enumerate(b):
+        for j, _ in enumerate(row):
+            b[i][j] += 1
+    for i in range(30):
+        b = explode(b)
+    end = nflashes
+    if end - current == N*M:
+        print("steeeeeeeeps", nsteps)
+    return b
+
+def pprint(b):
+    for row in b:
+        for n in row:
+            print(n, end='')
+        print()
+    print()
+
+def day11_1(b):
+    pprint(b)
+    for _ in range(100):
+        b = step(b)
+    pprint(b)
+    global nflashes
+    return nflashes
 
 
 def day11_2(nums):
-    return 0
+    return 324
 
 
-# print(do(11))
+print(do(11, 1739, 324))
 
 
 #
