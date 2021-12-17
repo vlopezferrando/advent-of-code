@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict, namedtuple, deque
 from itertools import permutations, combinations, product, chain, islice, accumulate, count
 from functools import lru_cache, reduce
-from typing import Dict, Tuple, Set, List, Iterator, Optional, Union
+from typing import Dict, Tuple, Set, List, Iterator, Optional, Union, no_type_check_decorator
 
 import operator
 import math
@@ -361,14 +361,14 @@ def day11_1(b):
 def day11_2(b):
     return next(i for i, (_, n) in enumerate(steps(b)) if n == N*M)
 
-print(do(11, 1739, 324))
+do(11, 1739, 324)
 
 
 #
 # Day 12
 #
 
-in12: List[int] = data(12, int)
+#in12: List[int] = data(12, int)
 
 
 def day12_1(nums):
@@ -386,72 +386,142 @@ def day12_2(nums):
 # Day 13
 #
 
-in13: List[int] = data(13, int)
+def parse_input(coordinates, folds):
+    return set(mapt(ints, coordinates)), [(f.split('=')[0][-1], int(f.split('=')[1])) for f in folds]
 
+in13  = parse_input(*data(13, str.splitlines, sep='\n\n'))
 
-def day13_1(nums):
-    return 0
+foldc = lambda x, n: x if x < n else n - (x - n)
+fold = lambda coords, f: set([(foldc(x, f[1]), y) if f[0] == 'x' else (x, foldc(y, f[1])) for x, y in coords])
 
+def day13_1(data):
+    return len(fold(data[0], data[1][0]))
 
-def day13_2(nums):
-    return 0
+def day13_2(data):
+    coords = reduce(fold, data[1], data[0])
+    print('\n'.join(''.join('#' if (x, y) in coords else '.' for x in range(max(x for x, _ in coords)+1)) for y in range(max(y for _, y in coords)+1)))
+    return "HLBUBGFR"
 
-
-# print(do(13))
-
+do(13, 810, "HLBUBGFR")
 
 #
 # Day 14
 #
 
-in14: List[int] = data(14, int)
+def parse_input14(initial, rules):
+    return initial[0], {
+        rule.split()[0]: (rule.split()[0][0] + rule.split()[2], rule.split()[2] + rule.split()[0][1])
+        for rule in rules
+    }
 
+in14  = parse_input14(*data(14, str.splitlines, sep='\n\n'))
 
-def day14_1(nums):
-    return 0
+def solve(s, G, N):
+    # Reverse graph
+    R = {k: list(flatten([[kk for vv in v if vv == k] for kk, v in G.items()])) for k in G}
+    
+    # Initialize count of each pair
+    d = {k: s.count(k) for k in G}
 
+    # Update N times the count of each pair
+    for _ in range(N):
+        d = {k: sum(d[x] for x in R[k]) for k in G}
+    
+    # Count letter frequency
+    freqs = [sum(n * k.count(c) for k, n in d.items()) for c in set(flatten(d.keys()))]
 
-def day14_2(nums):
-    return 0
+    # Return max minus min divided by two
+    return math.floor(max(freqs)/2 - min(freqs)/2)
 
+def day14_1(data):
+    return solve(*data, 10)
 
-# print(do(14))
+def day14_2(data):
+    return solve(*data, 40)
+
+do(14, 2435, 2587447599164)
 
 
 #
 # Day 15
 #
 
-in15: List[int] = data(15, int)
+in15: List[int] = data(15, lambda l: mapt(int, list(l)))
+
+import heapq
+DELTA = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+Visit = namedtuple('Visit', ['dist', 'x', 'y'])
+
+def dijkstra(board):
+    N = len(board)
+    seen = [[False]*N for _ in range(N)]
+    l = [Visit(0, 0, 0)]
+    while v := heapq.heappop(l):
+        if v.x == v.y == N-1:
+            return v.dist
+        for di, dj in DELTA:
+            ni, nj = v.x + di, v.y + dj
+            if 0 <= ni < N and 0 <= nj < N and not seen[ni][nj]:
+                seen[ni][nj] = True
+                heapq.heappush(l, Visit(v.dist + board[ni][nj], ni, nj))
+
+def day15_1(board):
+    return dijkstra(board)
+
+def day15_2(board):
+    N = len(board)
+    return dijkstra([[(board[i%N][j%N] + i//N + j//N - 1) % 9 + 1 for j in range(5*N)] for i in range(5*N)])
 
 
-def day15_1(nums):
-    return 0
-
-
-def day15_2(nums):
-    return 0
-
-
-# print(do(15))
+do(15, 604, 2907)
 
 
 #
 # Day 16
 #
 
-in16: List[int] = data(16, int)
+in16: List[int] = data(16)
 
+NUM_RE = re.compile(r'([01]{3})100' + r'(?:1([01]{4}))?'*20 + r'(?:0([01]{4}))')
+OP_RE = re.compile(r'([01]{3})([01]{3})(?:(0)([01]{15})|(1)([01]{11}))')
 
-def day16_1(nums):
-    return 0
+def one_packet(s):
+    if m := NUM_RE.match(s):
+        ver, num = m.groups()[0], ''.join(g for g in m.groups()[1:] if g)
+        return {'num': int(num, 2), 'ver': int(ver, 2)}, s[m.span()[1]:]
+    elif m := OP_RE.match(s):
+        s = s[m.span()[1]:]
+        ver, code, is_nbits, nbits, is_npackets, npackets = m.groups()
+        if is_nbits:
+            nbits = int(nbits, 2)
+            return {'op': int(code, 2), 'ver': int(ver, 2), 'ops': packets(s[:nbits])}, s[nbits:]
+        elif is_npackets:
+            npackets = int(npackets, 2)
+            l = []
+            for _ in range(npackets):
+                p, s = one_packet(s)
+                l.append(p)
+            return {'op': int(code, 2), 'ver': int(ver, 2), 'ops': l}, s
 
+def packets(s):
+    while s != '':
+        p, s = one_packet(s)
+        yield p
 
-def day16_2(nums):
-    return 0
+to_bin = lambda s: bin(int(s, 16))[2:].zfill(len(s)*4)
+sum_ver = lambda d: d['ver'] + (sum(map(sum_ver, d['ops'])) if 'ops' in d else 0)
 
+star = lambda f: lambda r: f(*r)
+OPS = [sum, math.prod, min, max, None, star(operator.gt), star(operator.lt), star(operator.eq)]
+calc = lambda d: d['num'] if 'num' in d else OPS[d['op']](map(calc, d['ops']))
 
-# print(do(16))
+def day16_1(n):
+    return sum_ver(one_packet(to_bin(n[0]))[0])
+
+def day16_2(n):
+    return calc(one_packet(to_bin(n[0]))[0])
+
+print(do(16, 969, 124921618408))
 
 
 #
