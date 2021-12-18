@@ -343,16 +343,10 @@ in11: List[int] = data(11, lambda l: list(map(int, l)))
 N, M, DELTA = len(in11), len(in11[0]), list(zip((1, 1, 1, 0, 0, -1, -1, -1), (-1, 0, 1, -1, 1, -1, 0, 1)))
 neighs = lambda i, j: [(i+di, j+dj) for di, dj in DELTA if 0 <= i+di < N and 0 <= j+dj < M]
 
-def explode(b, nflashes=0):
-    for i, j in product(range(N), range(M)):
-        if b[i][j] > 9:
-            b[i][j] = 0
-            for ni, nj in neighs(i, j):
-                b[ni][nj] += b[ni][nj] != 0
-            nflashes += 1
-    return b, nflashes
-
-step = lambda b: reduce(lambda p, _: explode(*p), range(N*M), ([[n+1 for n in r] for r in b], 0))
+explode_one = lambda b, ei, ej: [[0 if n == 0 or (i == ei and j == ej) else n + ((i,j) in neighs(ei, ej)) for j, n in enumerate(r)] for i, r in enumerate(b)]
+do_explode = lambda b, n: try_to_explode(explode_one(b, *next((i, j) for i, j in product(range(N), range(M)) if b[i][j] > 9)), n+1)
+try_to_explode = lambda b, n: do_explode(b, n) if sum(sum(x > 9 for x in r) for r in b) > 0 else (b, n)
+step = lambda b: try_to_explode([[n+1 for n in r] for r in b], 0)
 steps = lambda b: accumulate(count(), lambda p, _: step(p[0]), initial=(b, 0))
 
 def day11_1(b):
@@ -361,25 +355,30 @@ def day11_1(b):
 def day11_2(b):
     return next(i for i, (_, n) in enumerate(steps(b)) if n == N*M)
 
-print(do(11, 1739, 324))
+#print(do(11, 1739, 324))
 
 
 #
 # Day 12
 #
 
-in12: List[int] = data(12, int)
+in12 = data(12, lambda l: l.split('-'))
+G = defaultdict(list)
+for a, b in in12:
+    G[a].append(b)
+    G[b].append(a)
+
+def dfs(current, visited, can_repeat):
+    return 0 if str.islower(current) and current in visited and (not can_repeat or current == 'start') else sum(dfs(n, visited + [current], can_repeat and not (str.islower(current) and current in visited)) if n != 'end' else 1 for n in G[current])
+
+def day12_1(edges):
+    return dfs('start', [], False)
+
+def day12_2(edges):
+    return dfs('start', [], True)
 
 
-def day12_1(nums):
-    return 0
-
-
-def day12_2(nums):
-    return 0
-
-
-# print(do(12))
+print(do(12, 4970, 137948))
 
 
 #
