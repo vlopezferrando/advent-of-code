@@ -137,9 +137,6 @@ def day2_2(commands):
         if c == 'forward': p += n * (1 + aim * 1j)
     return int(p.real * p.imag)
 
-
-do(2, 1524750, 1592426537)
-
 #
 # Day 3
 #
@@ -161,9 +158,6 @@ def day3_1(rows):
 def day3_2(rows):
     return select_rating(rows, 0) * select_rating(rows, 1)
 
-do(3, 2261546, 6775520)
-
-
 #
 # Day 4
 #
@@ -180,9 +174,6 @@ in5: List[List[int]] = data(5, parse_segment)
 
 def day4_2(nums):
     return 0
-
-
-# print(do(4))
 
 def points(a, b, neq):
     l = []
@@ -201,13 +192,11 @@ def points(a, b, neq):
         ]
     return l
 
-
 def count2(segments, neq):
     return sum(
         n > 1
         for n in Counter(flatten([points(a, b, neq) for a, b in segments])).values()
     )
-
 
 def day5_1(segments):
     return count2(segments, False)
@@ -216,16 +205,11 @@ def day5_1(segments):
 def day5_2(segments):
     return count2(segments, True)
 
-
-do(5, 5169, 22083)
-
-
 #
 # Day 6
 #
 
 in6: List[int] = data(6, int, sep=',')
-
 
 @lru_cache(1000)
 def f(n, s):
@@ -236,12 +220,8 @@ def f(n, s):
 def day6_1(nums):
     return sum(f(n, 80) for n in nums)
 
-
 def day6_2(nums):
     return sum(f(n, 256) for n in nums)
-
-
-do(6, 349549, 1589590444365)
 
 
 #
@@ -260,9 +240,6 @@ def day7_2(nums):
         sum(abs(n - i) * (abs(n - i) + 1) // 2 for n in nums) for i in range(max(nums))
     )
 
-
-do(7, 342534, 94004208)
-
 #
 # Day 8
 #
@@ -280,9 +257,6 @@ def day8_1(rows):
 
 def day8_2(rows):
     return sum(n * 10**(3-i) for row in rows for i, n in enumerate(nums(row[:10], row[11:])))
-
-
-do(8, 288, 940724)
 
 
 #
@@ -307,8 +281,6 @@ def day9_2(rows):
 
     return math.prod(sorted([dfs(i, j) for i, j in product(range(N), range(M)) if rows[i][j] != 9])[-3:])
 
-do(9, 448, 1417248)
-
 
 #
 # Day 10
@@ -330,8 +302,6 @@ def day10_1(rows):
 
 def day10_2(rows):
     return middle(sorted(solve(r) for r in rows if solve(r) > 0))
-
-do(10, 290691, 2768166558)
 
 
 #
@@ -360,9 +330,6 @@ def day11_1(b):
 
 def day11_2(b):
     return next(i for i, (_, n) in enumerate(steps(b)) if n == N*M)
-
-do(11, 1739, 324)
-
 
 #
 # Day 12
@@ -402,8 +369,6 @@ def day13_2(data):
     print('\n'.join(''.join('#' if (x, y) in coords else '.' for x in range(max(x for x, _ in coords)+1)) for y in range(max(y for _, y in coords)+1)))
     return "HLBUBGFR"
 
-do(13, 810, "HLBUBGFR")
-
 #
 # Day 14
 #
@@ -439,9 +404,6 @@ def day14_1(data):
 def day14_2(data):
     return solve(*data, 40)
 
-do(14, 2435, 2587447599164)
-
-
 #
 # Day 15
 #
@@ -471,9 +433,6 @@ def day15_1(board):
 def day15_2(board):
     N = len(board)
     return dijkstra([[(board[i%N][j%N] + i//N + j//N - 1) % 9 + 1 for j in range(5*N)] for i in range(5*N)])
-
-
-do(15, 604, 2907)
 
 
 #
@@ -521,44 +480,83 @@ def day16_1(n):
 def day16_2(n):
     return calc(one_packet(to_bin(n[0]))[0])
 
-print(do(16, 969, 124921618408))
-
-
 #
 # Day 17
 #
 
-in17: List[int] = data(17, int)
+in17: List[int] = data(17)
 
+x0, x1, y0, y1 = 269, 292, -68, -44
 
-def day17_1(nums):
-    return 0
+def points(vx, vy, x=0, y=0):
+    while y0 <= y and x <= x1:
+        yield x, y
+        x, y, vx, vy = x+vx, y+vy, max(0, vx-1), vy-1
 
+solutions = [v for v in product(range(1000), range(-300, 300))
+             if any(x0 <= x <= x1 and y0 <= y <= y1 for x, y in points(*v))]
 
-def day17_2(nums):
-    return 0
+def day17_1(_):
+    return max(vy*(vy+1)//2 for _, vy in solutions)
 
-
-# print(do(17))
-
+def day17_2(_):
+    return len(solutions)
 
 #
 # Day 18
 #
 
-in18: List[int] = data(18, int)
+in18: List[int] = data(18, eval)
 
+def split(s):
+    if isinstance(s, int):
+        return (s, False) if s < 10 else ([s//2, math.ceil(s/2)], True)
+    L, splitted = split(s[0])
+    if splitted:
+        return [L, s[1]], True
+    R, splitted = split(s[1])
+    return [L, R], splitted
 
-def day18_1(nums):
-    return 0
+add_right = lambda s, n: s+n if isinstance(s, int) else [s[0], add_right(s[1], n)]
+add_left =  lambda s, n: s+n if isinstance(s, int) else [add_left(s[0], n), s[1]]
 
+def explode(s, depth=0):
+    if isinstance(s, int):
+        return s, False, 0, 0
+    if depth == 4:
+        return 0, True, s[0], s[1]
+    L, exploded, suml, sumr = explode(s[0], depth+1)
+    if exploded:
+        return [L, add_left(s[1], sumr)], True, suml, 0
+    R, exploded, suml, sumr = explode(s[1], depth+1)
+    if exploded:
+        return [add_right(s[0], suml), R], True, 0, sumr
+    return [L, R], False, 0, 0
 
-def day18_2(nums):
-    return 0
+def reduce_snails(s):
+    s, exploded, _, _ = explode(s)
+    if exploded:
+        return reduce_snails(s)
+    s, splitted = split(s)
+    if splitted:
+        return reduce_snails(s)
+    return s
 
+def sum_snails(s, r):
+    return reduce_snails([s, r])
 
-# print(do(18))
+def magnitude(s):
+    if isinstance(s, int):
+        return s
+    return 3*magnitude(s[0]) + 2*magnitude(s[1])
 
+def day18_1(snails):
+    return magnitude(reduce(sum_snails, snails[1:], snails[0]))
+
+def day18_2(snails):
+    return max(magnitude(sum_snails(a, b)) for a in snails for b in snails)
+
+print(do(18, 3675, 4650))
 
 #
 # Day 19
@@ -649,29 +647,22 @@ def day23_2(nums):
 
 # print(do(23))
 
-
-#
-# Day 24
-#
-
-in24: List[int] = data(24, int)
-
-
-def day24_1(nums):
-    return 0
-
-
-def day24_2(nums):
-    return 0
-
-
-# print(do(24))
-
-
-#
-# Day 25
-#
-
+do(2, 1524750, 1592426537)
+do(3, 2261546, 6775520)
+# print(do(4))
+do(5, 5169, 22083)
+do(6, 349549, 1589590444365)
+do(7, 342534, 94004208)
+do(8, 288, 940724)
+do(9, 448, 1417248)
+do(10, 290691, 2768166558)
+do(11, 1739, 324)
+# print(do(12))
+do(13, 810, "HLBUBGFR")
+do(14, 2435, 2587447599164)
+do(15, 604, 2907)
+do(16, 969, 124921618408)
+do(17, 2278, 996)
 in25: List[int] = data(25, int)
 
 
@@ -690,3 +681,19 @@ def day25_2(nums):
 #
 
 do(1, 1665, 1702)
+do(2, 1524750, 1592426537)
+do(3, 2261546, 6775520)
+# print(do(4))
+do(5, 5169, 22083)
+do(6, 349549, 1589590444365)
+do(7, 342534, 94004208)
+do(8, 288, 940724)
+do(9, 448, 1417248)
+do(10, 290691, 2768166558)
+do(11, 1739, 324)
+# print(do(12))
+do(13, 810, "HLBUBGFR")
+do(14, 2435, 2587447599164)
+do(15, 604, 2907)
+do(16, 969, 124921618408)
+do(17, 2278, 996)
