@@ -16,6 +16,8 @@ import ast
 import sys
 import re
 
+from numpy.lib.financial import nper
+
 
 def data(day: int, parser=str, sep="\n") -> list:
     "Split the day's input file into sections separated by `sep`, and apply `parser` to each."
@@ -556,60 +558,89 @@ def day18_1(snails):
 def day18_2(snails):
     return max(magnitude(sum_snails(a, b)) for a in snails for b in snails)
 
-print(do(18, 3675, 4650))
-
 #
 # Day 19
 #
 
-in19: List[int] = data(19, int)
+import numpy as np
 
+in19 = data(19, lambda s: mapt(ints, s.splitlines()[1:]), sep='\n\n')
 
-def day19_1(nums):
-    return 0
+ROTATIONS = [mat for a, b, c in product(((1,0,0), (-1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)), repeat=3)
+    if all([a[i], b[i], c[i]].count(0) == 2 for i in range(3)) and np.linalg.det(mat := np.array((a,b,c))) == 1]
 
+def normalize(scans, normalized, positions=[(0, 0, 0)], discarded=set()):
+    if len(scans) == len(normalized): return positions, normalized
+    for i, j in product(range(len(scans)), repeat=2):
+        if i in normalized and j not in normalized and (i, j) not in discarded:
+            ps = [(mapt(int, (p - rot @ np.array(q)).tolist()), rot)
+                    for p, q in product(normalized[i], scans[j]) for rot in ROTATIONS]
+            if (mc := Counter([c for c, _ in ps]).most_common(1)[0])[1] == 12:
+                rotation = next(rot for pos, rot in ps if pos == mc[0])
+                normalized[j] = [list(map(int, (rotation@np.array(s) + mc[0]).tolist())) for s in scans[j]]
+                return normalize(scans, normalized, positions + [mc[0]], discarded)
+            else:
+                discarded.add((i, j))
 
-def day19_2(nums):
-    return 0
+def day19_1(scans):
+    _, normalized = normalize(scans, {0: scans[0]})
+    return len(set([str(list(s)) for s in flatten(normalized.values())]))
 
-
-# print(do(19))
+def day19_2(scans):
+    positions, _ = normalize(scans, {0: scans[0]})
+    return max(sum(map(abs, [p[0]-q[0], p[1]-q[1], p[2]-q[2]])) for p, q in product(positions, repeat=2))
 
 
 #
 # Day 20
 #
 
-in20: List[int] = data(20, int)
+in20: List[int] = data(20, str.splitlines, sep='\n\n')
+rep = lambda s: s.replace('.', '0').replace('#', '1')
+LINE, B, N = rep(in20[0][0]), [list(rep(s)) for s in in20[1]], len(in20[1])
 
+DELTA = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
+neighs = lambda x, y: [(x+dx, y+dy) for dx, dy in DELTA]
 
-def day20_1(nums):
-    return 0
+change = lambda board: [[LINE[int(''.join(board[ni][nj] for ni, nj in neighs(i, j)), 2)] if 0 < i < len(board)-1 and 0 <= j < len(row)-1 else '0'
+            for j, _ in enumerate(row)] for i, row in enumerate(board)]
+with_margin = lambda b, M: [['0']*(N + 2*M) for _ in range(M)] + [['0']*M + row + ['0']*M for row in b] +[['0']*(N + 2*M) for _ in range(M)]
+count_lights = lambda b, I: sum(r[I:-I].count('1') for r in b[I:-I])
+run = lambda n: count_lights(reduce(lambda b, _: change(b), range(n), with_margin(B, 2*n)), n)
 
+def day20_1(_):
+    return run(2)
 
-def day20_2(nums):
-    return 0
-
-
-# print(do(20))
+def day20_2(_):
+    return run(50)
 
 
 #
 # Day 21
 #
 
-in21: List[int] = data(21, int)
+in21 = [4, 6]
+
+def winner(sa, sb, a, b, i, steps):
+    return (sa, steps) if sb >= 1000 else winner(sb, sa + (a+3*i+3)%10+1, b, (a+3*i+3)%10, i+3, steps+3)
+
+def day21_1(inp):
+    return math.prod(winner(0, 0, inp[0]-1, inp[1]-1, 1, 0))
+
+RESULTS = Counter([sum(x) for x in product([1,2,3], repeat=3)])
+
+@lru_cache(100000)
+def wins(sa, sb, a, b):
+    return (0, 1) if sb >= 21 else list(map(sum, zip(*[
+        (times * wp[1], times * wp[0])
+        for n, times in RESULTS.items() if (wp := wins(sb, sa + (a + n) % 10 + 1, b, (a + n) % 10))
+    ])))
+
+def day21_2(inp):
+    return max(wins(0, 0, inp[0]-1, inp[1]-1))
 
 
-def day21_1(nums):
-    return 0
-
-
-def day21_2(nums):
-    return 0
-
-
-# print(do(21))
+print(do(21, 888735, 647608359455719))
 
 
 #
@@ -645,37 +676,6 @@ def day23_2(nums):
     return 0
 
 
-# print(do(23))
-
-do(2, 1524750, 1592426537)
-do(3, 2261546, 6775520)
-# print(do(4))
-do(5, 5169, 22083)
-do(6, 349549, 1589590444365)
-do(7, 342534, 94004208)
-do(8, 288, 940724)
-do(9, 448, 1417248)
-do(10, 290691, 2768166558)
-do(11, 1739, 324)
-# print(do(12))
-do(13, 810, "HLBUBGFR")
-do(14, 2435, 2587447599164)
-do(15, 604, 2907)
-do(16, 969, 124921618408)
-do(17, 2278, 996)
-in25: List[int] = data(25, int)
-
-
-def day25_1(nums):
-    return 0
-
-
-def day25_2(nums):
-    return 0
-
-
-# print(do(25))
-
 #
 # Unit test all days
 #
@@ -697,3 +697,6 @@ do(14, 2435, 2587447599164)
 do(15, 604, 2907)
 do(16, 969, 124921618408)
 do(17, 2278, 996)
+do(18, 3675, 4650)
+do(19, 396, 11828)
+do(20, 5395, 17584)
