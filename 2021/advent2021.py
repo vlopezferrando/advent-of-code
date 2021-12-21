@@ -164,18 +164,33 @@ def day3_2(rows):
 # Day 4
 #
 
-in4: List[int] = data(4, str)
+in4 = data(4, sep='\n\n')
+
+nums4 = list(map(int, in4[0].split(',')))
+boards4 = [[ints(l) for l in board.splitlines()] for board in in4[1:]]
+
+def solve4():
+    return sorted([
+        next((i, sum(set(flatten(b)) - set(nums4[:i]))*nums4[i-1])
+        for i, _ in enumerate(nums4)
+        if any(set(nums4[:i]).issuperset(l) for l in b + list(zip(*b)))
+    ) for b in boards4])
+
+def day4_1(nums):
+    return solve4()[0][1]
+
+def day4_2(nums):
+    return solve4()[-1][1]
+
+
+#
+# Day 5
+#
 
 def parse_segment(row):
     return list(map(ints, row.split('->')))
 
-def day4_1(nums):
-    return 0
-
 in5: List[List[int]] = data(5, parse_segment)
-
-def day4_2(nums):
-    return 0
 
 def points(a, b, neq):
     l = []
@@ -337,18 +352,21 @@ def day11_2(b):
 # Day 12
 #
 
-#in12: List[int] = data(12, int)
+in12 = data(12, lambda l: l.split('-'))
 
+G = defaultdict(list)
+for a, b in in12:
+    G[a].append(b)
+    G[b].append(a)
 
-def day12_1(nums):
-    return 0
+def dfs(current, visited, can_repeat):
+    return 0 if str.islower(current) and current in visited and (not can_repeat or current == 'start') else sum(dfs(n, visited + [current], can_repeat and not (str.islower(current) and current in visited)) if n != 'end' else 1 for n in G[current])
 
+def day12_1(edges):
+    return dfs('start', [], False)
 
-def day12_2(nums):
-    return 0
-
-
-# print(do(12))
+def day12_2(edges):
+    return dfs('start', [], True)
 
 
 #
@@ -640,42 +658,6 @@ def day21_2(inp):
     return max(wins(0, 0, inp[0]-1, inp[1]-1))
 
 
-print(do(21, 888735, 647608359455719))
-
-
-#
-# Day 22
-#
-
-in22: List[int] = data(22, int)
-
-
-def day22_1(nums):
-    return 0
-
-
-def day22_2(nums):
-    return 0
-
-
-# print(do(22))
-
-
-#
-# Day 23
-#
-
-in23: List[int] = data(23, int)
-
-
-def day23_1(nums):
-    return 0
-
-
-def day23_2(nums):
-    return 0
-
-
 #
 # Unit test all days
 #
@@ -683,7 +665,7 @@ def day23_2(nums):
 do(1, 1665, 1702)
 do(2, 1524750, 1592426537)
 do(3, 2261546, 6775520)
-# print(do(4))
+do(4, 33348, 8112)
 do(5, 5169, 22083)
 do(6, 349549, 1589590444365)
 do(7, 342534, 94004208)
@@ -691,7 +673,7 @@ do(8, 288, 940724)
 do(9, 448, 1417248)
 do(10, 290691, 2768166558)
 do(11, 1739, 324)
-# print(do(12))
+do(12, 4970, 137948)
 do(13, 810, "HLBUBGFR")
 do(14, 2435, 2587447599164)
 do(15, 604, 2907)
@@ -700,3 +682,4 @@ do(17, 2278, 996)
 do(18, 3675, 4650)
 do(19, 396, 11828)
 do(20, 5395, 17584)
+do(21, 888735, 647608359455719)
