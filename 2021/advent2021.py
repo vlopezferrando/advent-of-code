@@ -17,6 +17,7 @@ import sys
 import re
 
 from numpy.lib.financial import nper
+from numpy.lib.shape_base import column_stack
 
 
 def data(day: int, parser=str, sep="\n") -> list:
@@ -587,27 +588,35 @@ in19 = data(19, lambda s: mapt(ints, s.splitlines()[1:]), sep='\n\n')
 ROTATIONS = [mat for a, b, c in product(((1,0,0), (-1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)), repeat=3)
     if all([a[i], b[i], c[i]].count(0) == 2 for i in range(3)) and np.linalg.det(mat := np.array((a,b,c))) == 1]
 
-def normalize(scans, normalized, positions=[(0, 0, 0)], discarded=set()):
+def normalize(scans, candidates, normalized, positions=[(0, 0, 0)]):
     if len(scans) == len(normalized): return positions, normalized
-    for i, j in product(range(len(scans)), repeat=2):
-        if i in normalized and j not in normalized and (i, j) not in discarded:
-            ps = [(mapt(int, (p - rot @ np.array(q)).tolist()), rot)
-                    for p, q in product(normalized[i], scans[j]) for rot in ROTATIONS]
-            if (mc := Counter([c for c, _ in ps]).most_common(1)[0])[1] == 12:
-                rotation = next(rot for pos, rot in ps if pos == mc[0])
-                normalized[j] = [list(map(int, (rotation@np.array(s) + mc[0]).tolist())) for s in scans[j]]
-                return normalize(scans, normalized, positions + [mc[0]], discarded)
-            else:
-                discarded.add((i, j))
+    for i, cs in candidates.items():
+        if i in normalized:
+            for j in cs:
+                if j not in normalized:
+                    ps = [(mapt(int, (p - rot @ np.array(q)).tolist()), rot)
+                            for p, q in product(normalized[i], scans[j]) for rot in ROTATIONS]
+                    if (mc := Counter([c for c, _ in ps]).most_common(1)[0])[1] == 12:
+                        rotation = next(rot for pos, rot in ps if pos == mc[0])
+                        normalized[j] = [list(map(int, (rotation@np.array(s) + mc[0]).tolist())) for s in scans[j]]
+                        return normalize(scans, candidates, normalized, positions + [mc[0]])
 
-def day19_1(scans):
-    _, normalized = normalize(scans, {0: scans[0]})
+dist = lambda p, q: sum(map(abs, [p[0]-q[0], p[1]-q[1], p[2]-q[2]]))
+
+def candidates(scans):
+    dists = [set(dist(p, q) for p in s for q in s) for s in scans]
+    return {
+        i: [j for j in range(len(scans)) if i != j and (len(dists[i] & dists[j]) > 60)]
+        for i in range(len(scans))
+    }
+
+positions, normalized = normalize(in19, candidates(in19), {0: in19[0]})
+
+def day19_1(_):
     return len(set([str(list(s)) for s in flatten(normalized.values())]))
 
-def day19_2(scans):
-    positions, _ = normalize(scans, {0: scans[0]})
-    return max(sum(map(abs, [p[0]-q[0], p[1]-q[1], p[2]-q[2]])) for p, q in product(positions, repeat=2))
-
+def day19_2(_):
+    return max(dist(*pq) for pq in product(positions, repeat=2))
 
 #
 # Day 20
