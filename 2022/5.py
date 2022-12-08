@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/N2Oj7guh9Oc
+#
+
 import copy
 
 STACKS = [

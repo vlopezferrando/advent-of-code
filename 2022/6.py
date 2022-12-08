@@ -1,3 +1,8 @@
+#
+# Check how I live coded this: https://youtu.be/m7ZMhMhYYpg
+#
+
+
 def index_where_first_sequence_of_distinct_characters_is_detected(s, n):
     for i in range(len(s) - n):
         if len(set(s[i : i + n])) == n:

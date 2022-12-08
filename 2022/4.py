@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/iRMfu0cVd2M
+#
+
 # Read input
 
 ranges = [list(map(int, line.split())) for line in open("4.in")]

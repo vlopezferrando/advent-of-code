@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/Wek4cmjLNsE
+#
+
 # Read input
 rounds = [line.split() for line in open("2.in")]
 

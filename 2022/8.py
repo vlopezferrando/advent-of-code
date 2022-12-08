@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/fTNdCiz3NKk
+#
+
 from math import prod
 
 # Read input
@@ -8,10 +12,10 @@ INCS = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
 
 def trees_in_dir(i, j, inc):
-    ni, nj = i + inc[0], j + inc[1]
-    while ni >= 0 and ni < N and nj >= 0 and nj < N:
-        yield grid[ni][nj]
-        ni, nj = ni + inc[0], nj + inc[1]
+    i, j = i + inc[0], j + inc[1]
+    while 0 <= i < N and 0 <= j < N:
+        yield grid[i][j]
+        i, j = i + inc[0], j + inc[1]
 
 
 def viewing_distance(i, j, inc):
@@ -24,11 +28,15 @@ def viewing_distance(i, j, inc):
 
 
 # Part 1
-p1 = sum(
-    any(all(tree < grid[i][j] for tree in trees_in_dir(i, j, inc)) for inc in INCS)
-    for i in range(N)
-    for j in range(N)
-)
+
+
+def is_visible(i, j):
+    return any(
+        all(tree < grid[i][j] for tree in trees_in_dir(i, j, inc)) for inc in INCS
+    )
+
+
+p1 = sum(is_visible(i, j) for i in range(N) for j in range(N))
 assert p1 == 1690
 
 # Part 2

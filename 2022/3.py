@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/5pD2x8rB1MI
+#
+
 import string
 
 lines = open("3.in").read().splitlines()

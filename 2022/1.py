@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/war1DKS2QZE
+#
+
 # Read the input, sum the groups and sort
 sums = sorted(
     [sum(map(int, g.splitlines())) for g in open("1.in").read().split("\n\n")]

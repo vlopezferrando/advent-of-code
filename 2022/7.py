@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/jn50frM7a0o
+#
+
 from math import inf
 
 
