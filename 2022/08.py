@@ -5,46 +5,48 @@
 from math import prod
 
 # Read input
-grid = open("8.in").read().splitlines()
+grid = open("08.in").read().splitlines()
 N = len(grid)
 
-INCS = ((1, 0), (-1, 0), (0, 1), (0, -1))
+DIRS = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
 
-def trees_in_dir(i, j, inc):
-    i, j = i + inc[0], j + inc[1]
+def trees_in_direction(i, j, d):
+    i, j = i + d[0], j + d[1]
     while 0 <= i < N and 0 <= j < N:
         yield grid[i][j]
-        i, j = i + inc[0], j + inc[1]
+        i, j = i + d[0], j + d[1]
 
 
-def viewing_distance(i, j, inc):
+def visible_from_direction(i, j, d):
+    """Tree in position (i, j) is taller than all other trees in direction d"""
+    return all(grid[i][j] > t for t in trees_in_direction(i, j, d))
+
+
+def visible_from_outside(i, j):
+    """Tree in position (i, j) is visible from some of the 4 directions"""
+    return any(visible_from_direction(i, j, d) for d in DIRS)
+
+
+def viewing_distance(i, j, d):
     ret = 0
-    for tree in trees_in_dir(i, j, inc):
+    for tree in trees_in_direction(i, j, d):
         ret += 1
         if tree >= grid[i][j]:
             break
     return ret
 
 
+def scenic_score(i, j):
+    return prod([viewing_distance(i, j, d) for d in DIRS])
+
+
 # Part 1
-
-
-def is_visible(i, j):
-    return any(
-        all(tree < grid[i][j] for tree in trees_in_dir(i, j, inc)) for inc in INCS
-    )
-
-
-p1 = sum(is_visible(i, j) for i in range(N) for j in range(N))
+p1 = sum(visible_from_outside(i, j) for i in range(N) for j in range(N))
 assert p1 == 1690
 
 # Part 2
-p2 = max(
-    prod([viewing_distance(i, j, inc) for inc in INCS])
-    for i in range(N)
-    for j in range(N)
-)
+p2 = max(scenic_score(i, j) for i in range(N) for j in range(N))
 assert p2 == 535680
 
 """
@@ -53,6 +55,8 @@ Lessons learned
 2. math.prod
 3. any(), all()     . max(), range()
 4. List comprehensions
-5. List of INCS (increments) to move around the grid
+5. List of DIRS (increments) to move around the grid
 6. yield: create a generator
+7. Compare three values in a single expression: 0 < 3 < 4
+8. Create small functions with clear names as a way to better explain the code
 """

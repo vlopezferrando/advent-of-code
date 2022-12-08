@@ -4,7 +4,7 @@
 
 # Read input
 
-ranges = [list(map(int, line.split())) for line in open("4.in")]
+ranges = [list(map(int, line.split())) for line in open("04.in")]
 
 
 # Part 1

@@ -3,7 +3,7 @@
 #
 
 # Read input
-rounds = [line.split() for line in open("2.in")]
+rounds = [line.split() for line in open("02.in")]
 
 # Rock, Paper, Scissors game spec
 R, P, S = "A", "B", "C"

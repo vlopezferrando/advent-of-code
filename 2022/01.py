@@ -4,7 +4,7 @@
 
 # Read the input, sum the groups and sort
 sums = sorted(
-    [sum(map(int, g.splitlines())) for g in open("1.in").read().split("\n\n")]
+    [sum(map(int, g.splitlines())) for g in open("01.in").read().split("\n\n")]
 )
 
 # Part 1

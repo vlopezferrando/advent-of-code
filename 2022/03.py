@@ -4,7 +4,7 @@
 
 import string
 
-lines = open("3.in").read().splitlines()
+lines = open("03.in").read().splitlines()
 
 
 def priority(type_):

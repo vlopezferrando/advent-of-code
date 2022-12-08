@@ -18,7 +18,7 @@ STACKS = [
 
 # Read instructions
 instructions = []
-for line in open("5.in"):
+for line in open("05.in"):
     _, n, _, from_, _, to = line.split()
     n, from_, to = int(n), int(from_) - 1, int(to) - 1
     instructions.append((n, from_, to))

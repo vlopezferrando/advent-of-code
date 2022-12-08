@@ -54,7 +54,7 @@ class Node:
 
 
 # Read input
-commands = open("7.in").read().split("$ ")
+commands = open("07.in").read().split("$ ")
 
 # Build the tree with the commands
 root = Node(commands)

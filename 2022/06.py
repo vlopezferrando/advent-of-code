@@ -11,7 +11,7 @@ def index_where_first_sequence_of_distinct_characters_is_detected(s, n):
 
 
 # Read input
-message = open("6.in").read().strip()
+message = open("06.in").read().strip()
 
 # Part 1
 assert index_where_first_sequence_of_distinct_characters_is_detected(message, 4) == 1816
