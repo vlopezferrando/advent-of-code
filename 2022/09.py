@@ -15,13 +15,14 @@ def tail_positions(knots):
             knots[0] += DIR[d]
 
             # Move each knot if necessary
-            for i, (h, t) in enumerate(zip(knots, knots[1:])):
+            for i in range(1, len(knots)):
+                h, t = knots[i - 1], knots[i]
                 if abs(h.real - t.real) == 2 or abs(h.imag - t.imag) == 2:
                     if h.real != t.real:
                         t += (h.real - t.real) / abs(h.real - t.real)
                     if h.imag != t.imag:
                         t += 1j * (h.imag - t.imag) / abs(h.imag - t.imag)
-                    knots[i + 1] = t
+                    knots[i] = t
 
             # Yield tail position
             yield knots[-1]
