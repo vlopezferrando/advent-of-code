@@ -1,15 +1,9 @@
 # Read input and run simulation
-XS = []
-cycle, X = 1, 1
+XS = [1]
 for line in open("10.in"):
-    XS.append(X)
-    cycle += 1
-
+    XS.append(XS[-1])
     if line.startswith("addx"):
-        XS.append(X)
-        cycle += 1
-        X += int(line.split()[1])
-
+        XS.append(XS[-1] + int(line[5:]))
 
 # Part 1
 p1 = sum(i * XS[i - 1] for i in [20, 60, 100, 140, 180, 220])
