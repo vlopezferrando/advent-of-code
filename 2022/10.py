@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/556MTXBn4J8
+#
+
 # Read input and run simulation
 XS = [1]
 for line in open("10.in"):
