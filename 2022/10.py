@@ -14,9 +14,10 @@ p1 = sum(i * XS[i - 1] for i in [20, 60, 100, 140, 180, 220])
 assert p1 == 17180
 
 # Part 2
+print()
 for i in range(6):
     for j in range(40):
-        print("#" if abs(j - XS[i * 40 + j]) < 2 else ".", end="")
+        print("#" if abs(j - XS[i * 40 + j]) < 2 else " ", end="")
     print()
 # Solution: REHPRLUB
 
