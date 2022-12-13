@@ -8,28 +8,25 @@ from functools import cmp_to_key
 PS = [eval(line) for line in open("13.in") if line.strip()]
 
 
-def compare(a, b):
+def comp(a, b):
     if type(a) == type(b) == int:
         return a - b
-
     if type(a) == int:
-        return compare([a], b)
+        return comp([a], b)
     if type(b) == int:
-        return compare(a, [b])
-
-    for aa, bb in zip(a, b):
-        if compare(aa, bb) != 0:
-            return compare(aa, bb)
+        return comp(a, [b])
+    if len(a) > 0 and len(b) > 0:
+        return comp(a[0], b[0]) if comp(a[0], b[0]) else comp(a[1:], b[1:])
     return len(a) - len(b)
 
 
 # Part 1
-p1 = sum(i + 1 for i, (a, b) in enumerate(zip(PS[::2], PS[1::2])) if compare(a, b) < 0)
+p1 = sum(i + 1 for i, (a, b) in enumerate(zip(PS[::2], PS[1::2])) if comp(a, b) < 0)
 assert p1 == 4821
 
 
 # Part 2
-PS = sorted(PS + [[[2]], [[6]]], key=cmp_to_key(compare))
+PS = sorted(PS + [[[2]], [[6]]], key=cmp_to_key(comp))
 p2 = (PS.index([[2]]) + 1) * (PS.index([[6]]) + 1)
 assert p2 == 21890
 
