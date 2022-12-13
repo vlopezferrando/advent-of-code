@@ -1,3 +1,7 @@
+#
+# Check how I live coded this: https://youtu.be/lPBNcF_aDus
+#
+
 # Read the grid and save as a dict
 grid = {i + j * 1j: c for i, l in enumerate(open("12.in")) for j, c in enumerate(l)}
 
