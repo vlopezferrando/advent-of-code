@@ -2,8 +2,7 @@
 
 The following is a post I publish in my site [The Diligent Developer](https://www.thediligentdeveloper.com/why-solving-the-advent-of-code-is-a-great-exercise):
 
-Title: Why solving the Advent of Code is a great exercise
-Date: 2023-08-22
+# Why solving the Advent of Code is a great exercise
 
 The [Advent of Code](https://adventofcode.com/) is a yearly challenge that consists of 25 programming problems, one each day, from December 1st to December 25th.
 Hundreds of thousands of programmers participate each year, and use it as a way to improve their coding skills, learn new programming languages or just for fun.
@@ -45,8 +44,6 @@ Anyway, by this time, whenever I read a Python code I had written more than a ye
 **It feels great to see how much you improved over time**.
 
 For the 2022 edition, I went one step further and recorded myself solving some of the problems, and [uploaded the videos to YouTube](https://www.youtube.com/watch?v=war1DKS2QZE&list=PL4R7dYNzbaX0MI2HyM2IOly83f5i5EZNr). This also proved to be a great exercise, because it made me focus 100% on the problem I was solving, and also because I had to be deliberate about what I was doing.
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5pD2x8rB1MI?si=yYuM4thq3Tvl-0f-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="margin-top: 40px; margin-bottom: 40px"></iframe>
 
 In case you are curious, you can check my code at [this repository on GitHub](https://github.com/vlopezferrando/advent-of-code), which has all my solutions and can judge for yourself how good or bad they are.
 
