@@ -1,3 +1,7 @@
+#
+# Check an explanation of this code: https://youtu.be/pBdknrCFKJc
+#
+
 from collections import deque
 from itertools import chain, product
 
