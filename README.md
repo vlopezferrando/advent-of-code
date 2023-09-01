@@ -1,6 +1,6 @@
 # Python solutions to the Advent of Code
 
-The following is a post I publish in my site [The Diligent Developer](https://www.thediligentdeveloper.com/why-solving-the-advent-of-code-is-a-great-exercise):
+The following is a post I publish in [The Diligent Developer](https://www.thediligentdeveloper.com/why-solving-the-advent-of-code-is-a-great-exercise).
 
 # Why solving the Advent of Code is a great exercise
 
